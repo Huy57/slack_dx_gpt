@@ -81,22 +81,35 @@ def send_image_to_channel(slack_channel: str):
     try:
         client = WebClient(token=SLACK_BOT_TOKEN)
         image_url ='https://moc247.com/wp-content/uploads/2023/12/loa-mat-voi-101-hinh-anh-avatar-meo-cute-dang-yeu-dep-mat_22-678x381.jpg'
-        response = requests.get(image_url)
+
+        image_urls = [
+            image_url,
+            image_url
+        ]
 
         # Kiểm tra xem yêu cầu tải ảnh có thành công không
-        if response.status_code != 200:
-            logger.error(f"Failed to fetch image from URL: {image_url}")
-            return None
-        attachments = [
+
+        logger.error(f"Failed to fetch image from URL: {image_url}")
+        # Tạo cấu trúc blocks cho tin nhắn
+        blocks = [
             {
-                "text": "title ảnh",  # Sử dụng tin nhắn làm tiêu đề
-                "image_url": image_url,  # Thêm URL ảnh vào đính kèm
-                "alt_text": "Ảnh đính kèm"
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "title ảnh"
+                }
             }
         ]
-        image_data = BytesIO(response.content)
+
+        # Thêm các hình ảnh vào blocks
+        for url in image_urls:
+            blocks.append({
+                "type": "image",
+                "image_url": url,
+                "alt_text": "Ảnh"
+            })
         # post_image_result = client.files_upload_v2(channels=slack_channel, file=image_data, filename='image.jpg', title='ảnh mèo')
-        client.chat_postMessage(channel=slack_channel, attachments=attachments)
+        client.chat_postMessage(channel=slack_channel, blocks=blocks)
         logger.info(f"Sent image to Slack channel successfully result")
         return None
 
