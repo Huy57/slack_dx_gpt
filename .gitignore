@@ -1,0 +1,7 @@
+__pycache__
+test*
+.idea
+documents
+AI_models
+logs/*
+.env

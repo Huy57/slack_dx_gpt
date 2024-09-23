@@ -1,0 +1,12 @@
+requests
+python-dotenv
+openai
+alembic
+fastapi
+uvicorn
+pydantic[email]
+python-multipart==0.0.7
+slack_sdk
+urllib3==1.26.16
+uvicorn[standard]
+
