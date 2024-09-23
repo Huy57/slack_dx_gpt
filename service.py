@@ -3,6 +3,7 @@ from fastapi import Request
 import requests
 import os
 import logging
+from slack_sdk import WebClient
 router = APIRouter()
 
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
@@ -33,8 +34,27 @@ async def slack_events(request: Request):
             # Gửi phản hồi tới người dùng
             reply_message = f"Bạn đã gửi: {user_message}"
             send_message_to_user(user_id, reply_message)
+            # Xử lý tin nhắn từ kênh
+        elif event.get('channel_type') == 'channel':
+            channel_id = event.get('channel')
+            user_message = event.get('text')
+            user_id = event.get('user')
 
+            # Loại trừ tin nhắn từ bot chính nó
+            if event.get('bot_id'):
+                return {"status": "ignored"}
+
+            # Gửi phản hồi tới kênh
+            reply_message = f"Tin nhắn từ kênh: {user_message}"
+            send_message_to_channel(channel_id, reply_message)
     return {"status": "ok"}
+
+
+def send_message_to_channel(channel_id: str, message: str):
+    # Gửi tin nhắn tới kênh
+    slack = WebClient(SLACK_BOT_TOKEN)
+    response = slack.chat_postMessage(channel=channel_id, text=message)
+    return response
 
 
 def send_message_to_user(user_id, text):
