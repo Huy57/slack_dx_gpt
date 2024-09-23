@@ -5,7 +5,7 @@ import os
 
 router = APIRouter()
 
-SLACK_BOT_TOKEN = chroma_host = os.getenv("SLACK_BOT_TOKEN")
+SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 SLACK_API_URL = 'https://slack.com/api/chat.postMessage'
 
 
