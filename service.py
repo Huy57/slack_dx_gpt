@@ -87,11 +87,18 @@ def send_image_to_channel(slack_channel: str):
         if response.status_code != 200:
             logger.error(f"Failed to fetch image from URL: {image_url}")
             return None
+        attachments = [
+            {
+                "text": "title ảnh",  # Sử dụng tin nhắn làm tiêu đề
+                "image_url": image_url,  # Thêm URL ảnh vào đính kèm
+                "alt_text": "Ảnh đính kèm"
+            }
+        ]
         image_data = BytesIO(response.content)
-        post_image_result = client.files_upload_v2(channels=slack_channel, file=image_data, filename='image.jpg', title='ảnh mèo')
-
-        logger.info(f"Sent image to Slack channel successfully result={post_image_result}")
-        return post_image_result
+        # post_image_result = client.files_upload_v2(channels=slack_channel, file=image_data, filename='image.jpg', title='ảnh mèo')
+        client.chat_postMessage(channel=slack_channel, attachments=attachments)
+        logger.info(f"Sent image to Slack channel successfully result")
+        return None
 
     except requests.RequestException as e:
         logger.error(f"Error accessing Slack API: {str(e)}")
