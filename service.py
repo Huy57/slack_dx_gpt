@@ -28,7 +28,8 @@ async def slack_events(request: Request):
         if event.get('type') == 'message' and event.get('channel_type') == 'im':
             user_message = event.get('text')  # Tin nhắn từ người dùng
             user_id = event.get('user')  # ID người dùng gửi tin nhắn
-
+            if event.get('bot_id'):
+                return {"status": "ignored"}
             # Gửi phản hồi tới người dùng
             reply_message = f"Bạn đã gửi: {user_message}"
             send_message_to_user(user_id, reply_message)
