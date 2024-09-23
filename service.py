@@ -81,30 +81,25 @@ def send_image_to_channel(slack_channel: str):
     try:
         client = WebClient(token=SLACK_BOT_TOKEN)
         image_url ='https://moc247.com/wp-content/uploads/2023/12/loa-mat-voi-101-hinh-anh-avatar-meo-cute-dang-yeu-dep-mat_22-678x381.jpg'
-
-        image_urls = [
-            image_url,
-            image_url
-        ]
+        data =[(image_url, "ảnh 1"), (image_url, "ảnh 2"), (image_url, "ảnh 3")]
 
         # Tạo cấu trúc blocks cho tin nhắn
         blocks = []
 
-        # Thêm các hình ảnh vào blocks với tiêu đề riêng
-        for i, url in enumerate(image_urls):
+        for url, title in data:
             # Thêm tiêu đề cho ảnh
             blocks.append({
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"Title ảnh {i + 1}"
+                    "text": title  # Sử dụng title từ dữ liệu
                 }
             })
             # Thêm khối hình ảnh
             blocks.append({
                 "type": "image",
                 "image_url": url,
-                "alt_text": f"Ảnh {i + 1}"
+                "alt_text": title  # Sử dụng title làm alt_text
             })
         # post_image_result = client.files_upload_v2(channels=slack_channel, file=image_data, filename='image.jpg', title='ảnh mèo')
         client.chat_postMessage(channel=slack_channel, blocks=blocks)
