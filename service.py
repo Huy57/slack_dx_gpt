@@ -88,7 +88,7 @@ def send_image_to_channel(slack_channel: str):
             logger.error(f"Failed to fetch image from URL: {image_url}")
             return None
         image_data = BytesIO(response.content)
-        post_image_result = client.files_upload(channels=slack_channel, file=image_data, title='ảnh mèo')
+        post_image_result = client.files_upload_v2(channels=slack_channel, file=image_data, filename='image.jpg', title='ảnh mèo')
 
         logger.info(f"Sent image to Slack channel successfully result={post_image_result}")
         return post_image_result
