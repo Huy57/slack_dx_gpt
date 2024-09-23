@@ -87,26 +87,24 @@ def send_image_to_channel(slack_channel: str):
             image_url
         ]
 
-        # Kiểm tra xem yêu cầu tải ảnh có thành công không
-
-        logger.error(f"Failed to fetch image from URL: {image_url}")
         # Tạo cấu trúc blocks cho tin nhắn
-        blocks = [
-            {
+        blocks = []
+
+        # Thêm các hình ảnh vào blocks với tiêu đề riêng
+        for i, url in enumerate(image_urls):
+            # Thêm tiêu đề cho ảnh
+            blocks.append({
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "title ảnh"
+                    "text": f"Title ảnh {i + 1}"
                 }
-            }
-        ]
-
-        # Thêm các hình ảnh vào blocks
-        for url in image_urls:
+            })
+            # Thêm khối hình ảnh
             blocks.append({
                 "type": "image",
                 "image_url": url,
-                "alt_text": "Ảnh"
+                "alt_text": f"Ảnh {i + 1}"
             })
         # post_image_result = client.files_upload_v2(channels=slack_channel, file=image_data, filename='image.jpg', title='ảnh mèo')
         client.chat_postMessage(channel=slack_channel, blocks=blocks)
