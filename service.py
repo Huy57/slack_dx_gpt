@@ -15,6 +15,7 @@ async def slack_events(request: Request):
     data = await request.json()
 
     logger.info(f"data123: {data}")
+    print(f"data123: {data}")
     # Xác thực URL từ Slack khi bật Events API (challenge request)
     if 'challenge' in data:
         return {"challenge": data["challenge"]}
