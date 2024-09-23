@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi import Request
 import requests
 import os
-
+import logging
 router = APIRouter()
 
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
@@ -13,6 +13,7 @@ SLACK_API_URL = 'https://slack.com/api/chat.postMessage'
 async def slack_events(request: Request):
     data = await request.json()
 
+    logging.info(f"data123: {data}")
     # Xác thực URL từ Slack khi bật Events API (challenge request)
     if 'challenge' in data:
         return {"challenge": data["challenge"]}
