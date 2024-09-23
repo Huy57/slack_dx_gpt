@@ -46,7 +46,8 @@ async def slack_events(request: Request):
 
             # Gửi phản hồi tới kênh
             reply_message = f"Tin nhắn từ kênh: {user_message}"
-            send_message_to_channel(channel_id, reply_message)
+            # send_message_to_channel(channel_id, reply_message)
+            send_image_to_channel(channel_id)
     return {"status": "ok"}
 
 
@@ -74,7 +75,15 @@ def send_message_to_user(user_id, text):
         print(f"Lỗi khi gửi tin nhắn: {response.status_code}, {response.text}")
 
 
+def send_image_to_channel(slack_channel: str):
+    try:
+        client = WebClient(token=SLACK_BOT_TOKEN)
+        image_url ='https://www.google.com/imgres?q=%E1%BA%A3nh%20m%C3%A8o&imgurl=https%3A%2F%2Flookaside.fbsbx.com%2Flookaside%2Fcrawler%2Fmedia%2F%3Fmedia_id%3D100064549818192&imgrefurl=https%3A%2F%2Fwww.facebook.com%2Fcatengucute%2F%3Flocale%3Dvi_VN&docid=gzqtA11_BSt3bM&tbnid=752Ch-CGhkwK0M&vet=12ahUKEwjsir_T6tiIAxXbs1YBHTgABKQQM3oECG4QAA..i&w=687&h=687&hcb=2&ved=2ahUKEwjsir_T6tiIAxXbs1YBHTgABKQQM3oECG4QAA'
+        post_image_result = client.files_upload(channels=slack_channel, file=image_url, title='ảnh mèo')
 
+        logger.info(f"Sent image to Slack channel successfully result={post_image_result}")
+        return post_image_result
 
-
-
+    except requests.RequestException as e:
+        logger.error(f"Error accessing Slack API: {str(e)}")
+        return None
