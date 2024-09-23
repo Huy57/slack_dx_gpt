@@ -8,12 +8,13 @@ router = APIRouter()
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 SLACK_API_URL = 'https://slack.com/api/chat.postMessage'
 
+logger = logging.getLogger(__name__)
 
 @router.post("/slack/events")
 async def slack_events(request: Request):
     data = await request.json()
 
-    logging.info(f"data123: {data}")
+    logger.info(f"data123: {data}")
     # Xác thực URL từ Slack khi bật Events API (challenge request)
     if 'challenge' in data:
         return {"challenge": data["challenge"]}
