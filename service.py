@@ -1,3 +1,5 @@
+from io import BytesIO
+
 from fastapi import APIRouter
 from fastapi import Request
 import requests
@@ -79,7 +81,14 @@ def send_image_to_channel(slack_channel: str):
     try:
         client = WebClient(token=SLACK_BOT_TOKEN)
         image_url ='https://moc247.com/wp-content/uploads/2023/12/loa-mat-voi-101-hinh-anh-avatar-meo-cute-dang-yeu-dep-mat_22-678x381.jpg'
-        post_image_result = client.files_upload(channels=slack_channel, file=image_url, title='ảnh mèo')
+        response = requests.get(image_url)
+
+        # Kiểm tra xem yêu cầu tải ảnh có thành công không
+        if response.status_code != 200:
+            logger.error(f"Failed to fetch image from URL: {image_url}")
+            return None
+        image_data = BytesIO(response.content)
+        post_image_result = client.files_upload(channels=slack_channel, file=image_data, title='ảnh mèo')
 
         logger.info(f"Sent image to Slack channel successfully result={post_image_result}")
         return post_image_result
