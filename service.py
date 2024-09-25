@@ -129,6 +129,3 @@ def get_user_info(user_id):
             print("Failed to get user info")
     except SlackApiError as e:
         print(f"Error: {e.response['error']}")
-
-# Gọi hàm để lấy thông tin người dùng
-get_user_info("U07NAM14HJ7")
