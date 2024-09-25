@@ -6,6 +6,8 @@ import requests
 import os
 import logging
 from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
+
 router = APIRouter()
 
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
@@ -31,6 +33,8 @@ async def slack_events(request: Request):
         if event.get('type') == 'message' and event.get('channel_type') == 'im':
             user_message = event.get('text')  # Tin nhắn từ người dùng
             user_id = event.get('user')  # ID người dùng gửi tin nhắn
+            print(f"user_id: {user_id}")
+            get_user_info(user_id)
             if event.get('bot_id'):
                 return {"status": "ignored"}
             # Gửi phản hồi tới người dùng
@@ -109,3 +113,22 @@ def send_image_to_channel(slack_channel: str):
     except requests.RequestException as e:
         logger.error(f"Error accessing Slack API: {str(e)}")
         return None
+
+def get_user_info(user_id):
+    try:
+        client = WebClient(token=SLACK_BOT_TOKEN)
+        # Gửi yêu cầu lấy thông tin người dùng
+        response = client.users_info(user=user_id)
+        # In ra thông tin người dùng nhận được
+        if response['ok']:
+            user_info = response['user']
+            print(f"User ID: {user_info['id']}")
+            print(f"Name: {user_info['profile']['real_name']}")
+            print(f"Email: {user_info['profile'].get('email', 'No email available')}")
+        else:
+            print("Failed to get user info")
+    except SlackApiError as e:
+        print(f"Error: {e.response['error']}")
+
+# Gọi hàm để lấy thông tin người dùng
+get_user_info("U07NAM14HJ7")
