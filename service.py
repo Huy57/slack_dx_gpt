@@ -44,7 +44,6 @@ async def slack_events(request: Request):
         elif event.get('channel_type') == 'channel':
             channel_id = event.get('channel')
             user_message = event.get('text')
-            user_id = event.get('user')
 
             # Loại trừ tin nhắn từ bot chính nó
             if event.get('bot_id'):
@@ -114,6 +113,7 @@ def send_image_to_channel(slack_channel: str):
         logger.error(f"Error accessing Slack API: {str(e)}")
         return None
 
+
 def get_user_info(user_id):
     try:
         client = WebClient(token=SLACK_BOT_TOKEN)
@@ -122,6 +122,7 @@ def get_user_info(user_id):
         # In ra thông tin người dùng nhận được
         if response['ok']:
             user_info = response['user']
+            print(f'user_data: {user_info}')
             print(f"User ID: {user_info['id']}")
             print(f"Name: {user_info['profile']['real_name']}")
             print(f"Email: {user_info['profile'].get('email', 'No email available')}")
